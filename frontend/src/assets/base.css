@@ -1,0 +1,454 @@
+/* --- Base & Global Variables --- */
+/* Move these to your main.css or App.vue for global access */
+:root {
+  /* Primary Colors */
+  --primary-color: #0056b3;         /* Improved contrast on white */
+  --primary-light: #E7F3FF;         /* Light blue for backgrounds */
+  --primary-hover: #004a8c;         /* Darker for hover states */
+  --primary-active: #003d73;        /* For pressed/active states */
+  --focus-ring: rgba(0, 86, 179, 0.5); /* For focus outlines */
+  
+  /* Secondary Colors */
+  --secondary-color: #6c757d;      /* Secondary button color */
+  --secondary-light: #e9ecef;      /* Light secondary */
+  --secondary-hover: #5a6268;      /* Hover state */
+  
+  /* Success States */
+  --success-color: #198754;        /* Green for correct answers */
+  --success-light: #E8F8EF;        /* Light green backgrounds */
+  --success-hover: #146c43;        /* Success hover */
+  
+  /* Error States */
+  --error-color: #DC3545;          /* Red for errors/incorrect */
+  --error-light: #FDF0F1;          /* Light red backgrounds */
+  --error-hover: #bb2d3b;          /* Error hover state */
+  
+  /* UI Colors */
+  --background-color: #F8F9FA;     /* Off-white container background */
+  --card-background: #FFFFFF;      /* White card background */
+  --text-primary: #212529;         /* Dark gray main text */
+  --text-secondary: #5A6268;       /* Darker than before for better contrast */
+  --border-color: #DEE2E6;         /* Light gray borders */
+  
+  /* UI Properties */
+  --border-radius: 8px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --font-family: 'Nunito Sans', system-ui, sans-serif;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Primary Colors - Dark Mode */
+    --primary-color: #3B82F6;
+    --primary-light: #1e3a8a;
+    --primary-hover: #60a5fa;
+    --primary-active: #93c5fd;
+    
+    /* UI Colors - Dark Mode */
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --border-color: #3a3a3a;
+    
+    /* Success & Error - Dark Mode */
+    --success-color: #10b981;
+    --success-light: #064e3b;
+    --error-color: #ef4444;
+    --error-light: #450a0a;
+    
+    /* Secondary - Dark Mode */
+    --secondary-color: #9ca3af;
+    --secondary-light: #374151;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* --- Component Specific Styles --- */
+/* --- Container & Status Messages --- */
+.quiz-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 15px;
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+}
+
+.status-message {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.1em;
+  color: var(--text-secondary);
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.status-message.loading {
+  color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-message.error {
+  background-color: var(--error-light);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+.error-details {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.retry-button {
+  margin-top: 15px;
+}
+
+/* --- Skeleton Loader --- */
+.skeleton-loader {
+  width: 100%;
+  padding: 20px;
+}
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 15px; }
+.skeleton-text { height: 16px; width: 90%; }
+.skeleton-option { height: 45px; width: 100%; margin-top: 15px; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* --- General Card Styling --- */
+.card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 25px 30px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+}
+
+/* --- Progress Indicator --- */
+.progress-indicator {
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--secondary-light);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  transition: width 0.4s ease-out;
+}
+.progress-text {
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* --- Question Elements --- */
+.question-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.question-text {
+  font-size: 1.25em;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+/* --- Options --- */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.option-label {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--card-background);
+  position: relative;
+}
+.option-label:hover {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light);
+}
+/* Focus state for keyboard navigation */
+.option input[type="radio"]:focus-visible + .option-label {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-color: var(--primary-color);
+}
+
+.option-letter {
+  font-weight: bold;
+  margin-right: 15px;
+  min-width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  color: var(--primary-color);
+  background-color: var(--card-background);
+  font-size: 0.9em;
+}
+.option-text {
+  flex-grow: 1;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* --- Option States --- */
+.option.selected .option-label {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light);
+}
+.option.selected .option-letter {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.option.disabled .option-label {
+  cursor: not-allowed;
+  opacity: 0.75;
+  background-color: var(--secondary-light);
+}
+.option.disabled .option-label:hover {
+  /* Prevent hover effects when disabled */
+  border-color: var(--border-color);
+  background-color: var(--secondary-light);
+}
+
+.option.correct .option-label {
+  border-color: var(--success-color);
+  background-color: var(--success-light);
+}
+.option.correct .option-letter {
+  background-color: var(--success-color);
+  color: white;
+  border-color: var(--success-color);
+}
+
+.option.incorrect .option-label {
+  border-color: var(--error-color);
+  background-color: var(--error-light);
+  box-shadow: 0 0 0 2px var(--error-color) inset;
+}
+.option.incorrect .option-letter {
+  background-color: var(--error-color);
+  color: white;
+  border-color: var(--error-color);
+}
+
+/* Highlight correct answer even if not selected */
+.option:not(.selected).correct .option-label {
+  border-color: var(--success-color);
+}
+
+/* --- Feedback --- */
+.feedback-container {
+  margin-top: 25px;
+  padding: 15px 20px;
+  border-radius: var(--border-radius);
+  background-color: var(--secondary-light);
+  border: 1px solid var(--border-color);
+}
+.feedback-text {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin: 0 0 10px 0;
+}
+.correct-text { color: var(--success-color); }
+.incorrect-text { color: var(--error-color); }
+
+.explanation-text {
+  color: var(--text-secondary);
+  font-size: 0.95em;
+  line-height: 1.6;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+}
+.explanation-text strong {
+  color: var(--text-primary);
+}
+
+.feedback-icon {
+  margin-left: auto;
+  padding-left: 10px;
+  font-size: 1.3em;
+}
+.correct-icon { color: var(--success-color); }
+.incorrect-icon { color: var(--error-color); }
+
+/* --- Buttons --- */
+.quiz-button {
+  display: inline-block;
+  padding: 10px 25px;
+  font-size: 1em;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.quiz-button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+.quiz-button.primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.quiz-button.primary:active {
+  background-color: var(--primary-active);
+  transform: translateY(1px);
+}
+.quiz-button:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.next-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+}
+.retry-button {
+  display: inline-block;
+  padding: 8px 20px;
+  font-size: 0.95em;
+  font-weight: 600;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  background-color: var(--card-background);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.retry-button:hover {
+  background-color: var(--error-light);
+  color: var(--error-hover);
+}
+.retry-button:active {
+  transform: translateY(1px);
+}
+.retry-button:focus-visible {
+  outline: 2px solid var(--error-color);
+  outline-offset: 2px;
+}
+
+/* --- Quiz Summary --- */
+.quiz-summary {
+  text-align: center;
+}
+.quiz-summary h2 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+.score {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+.review-section {
+  margin-top: 20px;
+  text-align: left;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+.review-section h3 {
+  font-size: 1.1em;
+  color: var(--text-secondary);
+  margin-bottom: 15px;
+}
+.review-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.review-section li {
+  padding: 8px 0;
+  font-size: 0.95em;
+  color: var(--text-primary);
+}
+
+/* --- Transitions --- */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* --- Utility Classes --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 600px) {
+  .quiz-container {
+    margin: 15px auto;
+    padding: 5px;
+  }
+  .card {
+    padding: 20px 15px;
+  }
+  .question-text {
+    font-size: 1.1em;
+  }
+  .option-label {
+    padding: 12px 15px;
+  }
+  .option-letter {
+    margin-right: 10px;
+  }
+  .feedback-container {
+    padding: 15px;
+  }
+  .quiz-button {
+    padding: 12px 20px; /* Larger tap target */
+    font-size: 1em;
+  }
+}

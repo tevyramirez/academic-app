@@ -1,0 +1,33 @@
+@import './base.css'; /* Ya lo tienes */
+
+body {
+  margin: 0; /* Eliminar margen por defecto del body */
+  font-family: var(--font-family); /* Aplicar fuente global */
+  background-color: var(--background-color); /* Fondo general */
+  color: var(--text-primary); /* Color de texto general */
+  line-height: 1.6;
+}
+
+#app { /* Este es el div donde se monta Vue */
+  /* max-width: 1280px;  Ya lo tienes, considera si debe estar aquí o en .main-content */
+  /* margin: 0 auto; */
+  /* padding: 2rem; Considera si este padding es necesario ahora con el layout */
+  font-weight: normal;
+  display: flex; /* Para que ocupe toda la altura */
+  flex-direction: column; /* Para que ocupe toda la altura */
+  min-height: 100vh; /* Para que ocupe toda la altura */
+}
+
+/* Puedes añadir otros reset o estilos base aquí */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--primary-color); /* O un color de texto más oscuro si prefieres */
+  margin-top: 0; /* Buen reset */
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
