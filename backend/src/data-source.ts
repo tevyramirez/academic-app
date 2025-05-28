@@ -1,6 +1,9 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Pregunta } from "./entities/pregunta.entity";
+import { User } from "./entities/user.entity";
+import { UserProgress } from "./entities/user-progress.entity";
+import { UserAnalytics } from "./entities/user-analytics.entity";
 import dotenv from "dotenv";
 
 // Load environment variables from .env file
@@ -20,7 +23,7 @@ export const AppDataSource = new DataSource({
   // Set to true only for development if you want quick schema updates without migrations.
   synchronize: !isProduction && process.env.TYPEORM_SYNCHRONIZE === "true",
   logging: process.env.TYPEORM_LOGGING === "true" || !isProduction,
-  entities: [Pregunta],
+  entities: [Pregunta, User, UserProgress, UserAnalytics],
   migrations: [__dirname + "/migrations/*.{js,ts}"], // Adjusted path for migrations
   subscribers: [],
 });

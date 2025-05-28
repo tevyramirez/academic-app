@@ -1,14 +1,28 @@
 -- Initialize database for study app
 
+-- Create schema
+CREATE SCHEMA IF NOT EXISTS study_app;
+
 -- Create questions table
-CREATE TABLE preguntas (s
+CREATE TABLE study_app.preguntas (
     id SERIAL PRIMARY KEY,
     text_content TEXT NOT NULL, -- Contenido textual de la pregunta
-    raw_source TEXT -- Origen o contexto crudo (ej: "PDF_Test_1, pag 3")
+    respuesta_correcta TEXT, -- Respuesta correcta
+    raw_source TEXT, -- Origen o contexto crudo (ej: "PDF_Test_1, pag 3")
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Add some sample data for testing
-INSERT INTO preguntas (text_content, raw_source) 
+-- Add the questions data
+INSERT INTO study_app.preguntas (text_content, respuesta_correcta, raw_source) 
 VALUES 
-    ('¿Cuál es la capital de Francia?', 'Test_Manual'),
-    ('¿Quién escribió Don Quijote de la Mancha?', 'Test_Manual');
+('1 ¿Cuál de las siguientes acciones de un docente expresa con mayor precisión el enfoque de educación para la diversidad propuesto por el Ministerio de Educación?\nA) Elaborar actividades de aprendizaje basadas en planes específicos que atiendan diferentes tipos de discapacidad.\nB) Construir actividades para el aprendizaje a partir del currículum, con recursos y apoyos adicionales e individuales.\nC) Desarrollar prácticas pedagógicas que respeten el principio de igualdad, a través de metodologías y estrategias equivalentes.\nD) Distribuir a los estudiantes considerando sus niveles de competencia y desempeño logrados en sus aprendizajes.', 'B', 'Migration_2025_05_27'),
+('2 Lea la siguiente definición: Necesidad Educativa que corresponde a las "diferentes capacidades, intereses, niveles, ritmos y estilos de aprendizaje que mediatizan el proceso de aprendizaje haciendo que sean únicos e irrepetibles en cada caso" (MINEDUC, 2011).\n¿A qué tipo de Necesidad Educativa se refiere la definición anterior?\nA) Común.\nB) Individual.\nC) Especial transitoria.\nD) Especial permanente.', 'B', 'Migration_2025_05_27'),
+('3 Lea la siguiente descripción:\nEs un profesional que forma parte del equipo de aula, trabajacolaborativamente con todos los profesionales de apoyo, aplica la evaluación diagnóstica inicial mediante pruebas con normas de referencia nacional, apoya activamente los procesos dedetección y superación de las necesidades educativas especiales.\nSegún el Decreto N° 170, ¿a cuál de los siguientes profesionales se hace referencia en la descripción anterior?\nA) Fonoaudiólogo.\nB) Profesor de aula.\nC) Psicopedagogo.\nD) Profesor de educación especial.', 'A', 'Migration_2025_05_27'),
+('4 ¿Cuál es la asignación horaria de los apoyos profesionales para NEET que establece el Decreto N° 170 en los establecimientos con PIE?\nA) Mínimo 1 hora semanal de atención fonoaudiológica en sesiones individuales o en grupos de hasta tres estudiantes.\nB) Mínimo 8 horas pedagógicas semanales de apoyo en sala de clases regular en establecimientos con Jornada Escolar Completa.\nC) Mínimo 5 horas cronológicas semanales de coordinación para la planificación, evaluación y seguimiento con profesionales de educación regular y apoderados.\nD) Mínimo 12 horas cronológicas semanales de apoyo de profesionales o recursos humanos especializados en grupos de no más de 5 estudiantes por curso, en establecimientos sin Jornada Escolar Completa.', 'B', 'Migration_2025_05_27'),
+('5 ¿Cuál de las siguientes opciones contiene uno de los requisitos para el ingreso de estudiantes con TEL a un Programa de Integración Escolar?\nA) Tener un trastorno del habla u orgánico diagnosticado.\nB) Tener un retraso simple del lenguaje diagnosticado.\nC) Presentar dificultades en el componente fonológico del lenguaje.\nD) Presentar una evaluación diagnóstica integral realizada por profesionales competentes.', 'D', 'Migration_2025_05_27'),
+('6 Según lo establecido en el Decreto N° 83, ¿cuál es el principal propósito de la información levantada por una evaluación diagnóstica que considera elementos como progreso, estilo y ritmos de aprendizaje de todos los estudiantes?\nA) Identificar los intereses y motivaciones académicas que presentan los estudiantes de todo el curso.\nB) Aportar datos relevantes sobre los factores que favorecen o dificultan el aprendizaje de un grupo de estudiantes.\nC) Identificar a los estudiantes que requieran ingresar al PIE y derivar al proceso de evaluación diagnóstica integral.\nD) Planificar estrategias diversificadas que respondan a las diferencias individuales en el aprendizaje de todos los estudiantes.', 'D', 'Migration_2025_05_27'),
+('7 Según el Decreto N° 1300, ¿qué objetivo tiene la evaluación de ingreso de un niño con TEL realizada por el profesor especialista?\nA) Definir el Plan Específico de Estudio.\nB) Medir la expresión y comprensión del lenguaje.\nC) Evaluar las dimensiones del lenguaje más afectadas por el TEL.\nD) Establecer las Necesidades Educativas Especiales derivadas del TEL.', 'D', 'Migration_2025_05_27'),
+('8 ¿Cuál de las siguientes características corresponde exclusivamente a un TEL de tipo mixto según los criterios diagnósticos del Decreto N° 1300?\nA) Dificultad en la comprensión de órdenes e instrucciones.\nB) Incapacidad para reproducir los sonidos del habla de acuerdo con su edad.\nC) Presencia de errores en tiempos verbales y de concordancia entre género y número.\nD) Dificultad para evocar oraciones de mayor complejidad de acuerdo con el rango etario.', 'A', 'Migration_2025_05_27'),
+('9 ¿Cuál de las siguientes opciones presenta uno de los criterios que el Decreto N° 1300 considera para el diagnóstico de un TEL expresivo?\nA) Las dificultades del lenguaje expresivo se asocian a problemas de articulación.\nB) Las dificultades del lenguaje expresivo interfieren en el rendimiento académico.\nC) Las dificultades del lenguaje expresivo se deben a un inicio tardío del lenguaje oral.\nD) Las dificultades del lenguaje expresivo se manifiestan en una producción oral precipitada.', 'B', 'Migration_2025_05_27'),
+('10 Según el Decreto N° 1300, ¿cuál de las siguientes opciones señala una de las funciones del profesor especialista en una escuela de lenguaje?\nA) Planificar la atención pedagógica basándose en el Plan Específico.\nB) Orientar a la familia a través de actividades que desarrollen el habla del niño.\nC) Trabajar colaborativamente con el fonoaudiólogo en la implementación del Plan Específico.\nD) Atender a los estudiantes individualmente o en pequeños grupos para trabajar lo consignado en el Plan Específico Individual.', 'C', 'Migration_2025_05_27');

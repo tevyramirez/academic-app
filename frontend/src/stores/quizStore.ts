@@ -36,14 +36,26 @@ export const useQuizStore = defineStore('quiz', () => {
   }
 
   function setAllQuestions(questionsFromApi: QuestionFromApi[]) {
+    // Guard against non-array inputs
+    if (!Array.isArray(questionsFromApi)) {
+      console.error("setAllQuestions received non-array input:", questionsFromApi);
+      return; // Don't update the store with invalid data
+    }
+    
     const processed = questionsFromApi
       .map(q => {
+        // Skip if question object is invalid
+        if (!q || typeof q !== 'object') {
+          console.warn("Invalid question object in array, skipping.");
+          return null;
+        }
+        
         if (!q.respuesta_correcta) { // Filter out questions without a correct answer
           console.warn(`Question ID ${q.id} has no respuesta_correcta, skipping.`);
           return null;
         }
         const options = parseOptions(q.text_content);
-        if (options.length === 0) { // Filter out questions where options couldn't be parsed
+        if (!Array.isArray(options) || options.length === 0) { // Filter out questions where options couldn't be parsed
              console.warn(`Question ID ${q.id} could not parse options, skipping.`);
              return null;
         }

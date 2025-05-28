@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import type { ProcessedQuestion } from '../stores/quizStore'; // Using the processed question type
+import type { ProcessedQuestion } from '../types/question'; // Using the processed question type
 
 const props = defineProps<{
   question: ProcessedQuestion;
@@ -31,7 +31,8 @@ const flipCard = () => {
 };
 
 const correctAnswerText = computed(() => {
-  const correctOption = props.question.parsedOptions.find(opt => opt.letter === props.question.respuesta_correcta);
+  const options = props.question.parsedOptions || [];
+  const correctOption = options.find((opt): opt is { letter: string; text: string } => opt.letter === props.question.respuesta_correcta);
   return correctOption ? `${correctOption.letter}) ${correctOption.text}` : 'Respuesta no encontrada';
 });
 

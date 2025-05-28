@@ -1,17 +1,26 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import questionRoutes from "./routes/question.routes";
+import authRoutes from "./routes/auth.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 
 // Create Express application
 const app: Application = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes
 app.use("/api/questions", questionRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/v1", analyticsRoutes);
 
 // Home route
 app.get("/", (_req: Request, res: Response) => {

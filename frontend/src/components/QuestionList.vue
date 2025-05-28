@@ -48,7 +48,7 @@
 
         <div class="options-container" role="radiogroup" :aria-labelledby="`question-title-${currentQuestion.id}`" :aria-describedby="showFeedback ? `feedback-${currentQuestion.id}` : undefined">
           <div
-            v-for="option in currentQuestion.parsedOptions"
+            v-for="option in (currentQuestion.parsedOptions || [])"
             :key="option.letter"
             class="option"
             :class="{
@@ -110,7 +110,7 @@
 import { ref, onMounted, computed, nextTick, watch } from 'vue';
 import { useQuizStore } from '../stores/quizStore';
 import type { ProcessedQuestion } from '../types/question';
-import { apiService } from '../services/api';
+import { getQuestions } from '../services/api';
 
 const quizStore = useQuizStore();
 
@@ -157,7 +157,12 @@ const fetchAndStartQuiz = async () => {
   error.value = null;
   try {
     if (quizStore.allQuestions.length === 0) { // Fetch only if not already in store
-      const questionsFromApi = await apiService.getQuestions();
+      const questionsFromApi = await getQuestions();
+      // Ensure we have an array before passing to setAllQuestions
+      if (!Array.isArray(questionsFromApi)) {
+        console.error("fetchAndStartQuiz: Expected array but got:", questionsFromApi);
+        throw new Error("El formato de respuesta del servidor es inesperado");
+      }
       quizStore.setAllQuestions(questionsFromApi);
     }
     if (quizStore.allQuestions.length === 0) {

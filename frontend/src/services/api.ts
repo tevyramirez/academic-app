@@ -1,6 +1,38 @@
-import type { QuestionFromApi } from '../types/question'; // Adjust path if your store is elsewhere
+import axios from 'axios';
+import type { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import type { QuestionFromApi } from '../types/question';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL||'/api'; // Vite proxy will handle this during development
+// Create axios instance with base configuration
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  withCredentials: true,
+  validateStatus: function (status) {
+    // Consider only network errors and 500+ as errors
+    return status < 500;
+  },
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle 401 responses
+api.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 interface ApiResponse {
   success: boolean;
@@ -10,40 +42,99 @@ interface ApiResponse {
   errors?: Array<{ property: string; constraints: Record<string, string> }>;
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    let errorPayload: ApiResponse | null = null;
-    try {
-      errorPayload = await response.json();
-    } catch {
-      // Ignore if response is not JSON
-    }
-    const errorMessage = errorPayload?.error || `HTTP error ${response.status}: ${response.statusText}`;
-    throw new Error(errorMessage);
+async function handleAxiosResponse<T>(response: AxiosResponse): Promise<T> {
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
   }
-  const payload: ApiResponse = await response.json();
-  if (!payload.success) {
-    const errorsString = payload.errors ? payload.errors.map(e => `${e.property}: ${Object.values(e.constraints).join(', ')}`).join('; ') : '';
-    throw new Error(payload.error || errorsString || 'API request failed');
-  }
-  return payload.data as T;
+  
+  const errorPayload = response.data as ApiResponse;
+  const errorMessage = errorPayload?.error || `HTTP error ${response.status}: ${response.statusText}`;
+  throw new Error(errorMessage);
 }
 
-export const apiService = {
-  async getQuestions(): Promise<QuestionFromApi[]> {
-    const response = await fetch(`${API_BASE_URL}/questions`);
-    return handleResponse<QuestionFromApi[]>(response);
-  },
+// Question endpoints
+export async function getQuestions(): Promise<QuestionFromApi[]> {
+  const response = await api.get('/questions');
+  const result = await handleAxiosResponse<{success: boolean, data: QuestionFromApi[]}>(response);
+  return result.data; // Extract the actual questions array from the wrapper
+}
 
-  // Example for createPregunta if you need it in the future
-  // async createPregunta(preguntaData: { text_content: string; raw_source?: string }): Promise<QuestionFromApi> {
-  //   const response = await fetch(`${API_BASE_URL}/questions/raw`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(preguntaData),
-  //   });
-  //   return handleResponse<QuestionFromApi>(response);
-  // }
+export async function getQuestionsByTopic(topic: string): Promise<QuestionFromApi[]> {
+  const response = await api.get(`/questions/topic/${topic}`);
+  const result = await handleAxiosResponse<{success: boolean, data: QuestionFromApi[]}>(response);
+  return result.data; // Extract the actual questions array from the wrapper
+}
+
+// Analytics endpoints
+export async function getUserAnalytics() {
+  const response = await api.get('/v1/analytics');
+  return handleAxiosResponse<any>(response);
+}
+
+export async function generateUserAnalytics() {
+  const response = await api.post('/v1/analytics/generate');
+  return handleAxiosResponse<any>(response);
+}
+
+export async function getProgressStats() {
+  const response = await api.get('/v1/progress/stats');
+  return handleAxiosResponse<any>(response);
+}
+
+// Auth endpoints
+export async function register(data: { name: string; email: string; password: string }) {
+  const response = await api.post('/auth/register', data);
+  return handleAxiosResponse<any>(response);
+}
+
+export async function login(data: { email: string; password: string }) {
+  const response = await api.post('/auth/login', data);
+  return handleAxiosResponse<any>(response);
+}
+
+export async function logout() {
+  const response = await api.post('/auth/logout');
+  return handleAxiosResponse<void>(response);
+}
+
+// User endpoints
+export async function getUserProfile() {
+  const response = await api.get('/user/profile');
+  return handleAxiosResponse<any>(response);
+}
+
+export async function updateUserProfile(data: { name: string; email: string }) {
+  const response = await api.put('/user/profile', data);
+  return handleAxiosResponse<any>(response);
+}
+
+export async function updateUserPassword(data: { currentPassword: string; newPassword: string }) {
+  const response = await api.put('/user/password', data);
+  return handleAxiosResponse<void>(response);
+}
+
+export async function getUserPreferences() {
+  const response = await api.get('/user/preferences');
+  return handleAxiosResponse<any>(response);
+}
+
+export async function updateUserPreferences(data: any) {
+  const response = await api.put('/user/preferences', data);
+  return handleAxiosResponse<any>(response);
+}
+
+export default {
+  getQuestions,
+  getQuestionsByTopic,
+  getUserAnalytics,
+  generateUserAnalytics,
+  getProgressStats,
+  register,
+  login,
+  logout,
+  getUserProfile,
+  updateUserProfile,
+  updateUserPassword,
+  getUserPreferences,
+  updateUserPreferences,
 };

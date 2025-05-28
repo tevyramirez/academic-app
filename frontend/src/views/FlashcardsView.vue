@@ -40,7 +40,7 @@ import { useQuizStore} from '../stores/quizStore';
 import type { ProcessedQuestion } from '../types/question';
 import FlashcardItem from '../components/FlashcardItem.vue';
 import { RouterLink } from 'vue-router';
-import { apiService } from '../services/api'; // Import apiService
+import { getQuestions } from '../services/api'; // Import apiService
 
 const quizStore = useQuizStore();
 const flashcardSet = ref<ProcessedQuestion[]>([]);
@@ -77,7 +77,12 @@ async function ensureQuestionsLoaded() {
   if (quizStore.allQuestions.length === 0) {
     try {
       console.log("FlashcardsView: No questions in store, fetching...");
-      const questionsFromApi = await apiService.getQuestions();
+      const questionsFromApi = await getQuestions();
+      // Ensure we have an array before passing to setAllQuestions
+      if (!Array.isArray(questionsFromApi)) {
+        console.error("ensureQuestionsLoaded: Expected array but got:", questionsFromApi);
+        throw new Error("El formato de respuesta del servidor es inesperado");
+      }
       quizStore.setAllQuestions(questionsFromApi); // This will process and store them
     } catch (error) {
       console.error("FlashcardsView: Failed to fetch questions:", error);

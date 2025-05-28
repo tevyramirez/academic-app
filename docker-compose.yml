@@ -9,6 +9,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/user-system.sql:/docker-entrypoint-initdb.d/user-system.sql
     restart: unless-stopped
     networks:
       - app-network
@@ -37,7 +38,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "0.0.0.0:80:80"  # Expose to all network interfaces
     environment:
       - VITE_API_URL=/api
     restart: unless-stopped
