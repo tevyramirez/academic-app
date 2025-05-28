@@ -6,6 +6,15 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "baseUrl": "./src", // Added for absolute paths
+    "paths": { // Example paths, adjust as needed if you add services, etc.
+      "@/*": ["*"],
+      "@/controllers/*": ["controllers/*"],
+      "@/entities/*": ["entities/*"],
+      "@/dto/*": ["dto/*"],
+      "@/routes/*": ["routes/*"],
+      "@/services/*": ["services/*"] // For future service layer
+    },
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,

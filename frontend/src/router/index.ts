@@ -1,7 +1,7 @@
 // src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue' // Será nuestro Dashboard
-import QuizView from '../views/QuizView.vue' // Moveremos QuestionList aquí
+import QuizView from '../views/QuizView.vue'
 import StatsView from '../views/StatsView.vue' // Nueva vista para estadísticas
 import FlashcardsView from '../views/FlashcardsView.vue' // Nueva vista para Flashcards
 

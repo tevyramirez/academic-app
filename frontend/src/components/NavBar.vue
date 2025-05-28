@@ -12,7 +12,7 @@
       <li><RouterLink to="/stats" active-class="active-link">Estadísticas</RouterLink></li>
       <!-- <li><RouterLink to="/about" active-class="active-link">Acerca de</RouterLink></li> -->
     </ul>
-    <button class="menu-toggle" @click="toggleMobileMenu" aria-label="Toggle menu" :aria-expanded="isMobileMenuOpen.toString()">
+    <button class="menu-toggle" @click="toggleMobileMenu" aria-label="Toggle menu" :aria-expanded="isMobileMenuOpen">
       ☰
     </button>
      <ul class="navbar-links-mobile" :class="{ open: isMobileMenuOpen }">

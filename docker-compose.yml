@@ -1,18 +1,53 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:15
-    container_name: studyapp_postgres
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
+  db:
+    image: postgres:15-alpine
+    container_name: academic-app-db
     environment:
-      POSTGRES_USER: studyuser
-      POSTGRES_PASSWORD: studypass
-      POSTGRES_DB: studydb
+      POSTGRES_USER: academicapp
+      POSTGRES_PASSWORD: academicapppass
+      POSTGRES_DB: academicapp
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  backend:
+    build: 
+      context: ./backend
+    container_name: academic-app-backend
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=production
+      - TYPEORM_HOST=db
+      - TYPEORM_PORT=5432
+      - TYPEORM_USERNAME=academicapp
+      - TYPEORM_PASSWORD=academicapppass
+      - TYPEORM_DATABASE=academicapp
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: academic-app-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=/api
+    restart: unless-stopped
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  pgdata:
+  postgres_data:

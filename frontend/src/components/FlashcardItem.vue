@@ -2,14 +2,14 @@
   <div class="flashcard" :class="{ 'is-flipped': isFlipped }" @click="flipCard">
     <div class="flashcard-inner">
       <div class="flashcard-front">
-        <p>{{ questionText }}</p>
+        <p>{{ question.questionText }}</p>
       </div>
       <div class="flashcard-back">
         <p class="answer-label">Respuesta:</p>
         <p class="answer-text">{{ correctAnswerText }}</p>
-        <div v-if="explanation" class="explanation">
+        <div v-if="question.explanation" class="explanation">
           <p class="explanation-label">Explicación:</p>
-          <p>{{ explanation }}</p>
+          <p>{{ question.explanation }}</p>
         </div>
       </div>
     </div>
@@ -18,15 +18,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import type { ProcessedQuestion } from '../stores/quizStore'; // Using the processed question type
 
 const props = defineProps<{
-  question: {
-    id: number;
-    text_content: string;
-    parsedOptions: { letter: string, text: string }[];
-    respuesta_correcta: string;
-    explanation?: string;
-  }
+  question: ProcessedQuestion;
 }>();
 
 const isFlipped = ref(false);
@@ -35,28 +30,20 @@ const flipCard = () => {
   isFlipped.value = !isFlipped.value;
 };
 
-// Función para limpiar el texto de la pregunta (igual que en QuestionList)
-const cleanQuestionTextInternal = (text: string) => {
-  if (!text) return '';
-  return text.replace(/(?:\n|^)\s*[A-D]\)\s*.*?(?=(?:\n\s*[A-D]\)|$))/gs, '').trim();
-};
-
-const questionText = computed(() => cleanQuestionTextInternal(props.question.text_content));
 const correctAnswerText = computed(() => {
   const correctOption = props.question.parsedOptions.find(opt => opt.letter === props.question.respuesta_correcta);
   return correctOption ? `${correctOption.letter}) ${correctOption.text}` : 'Respuesta no encontrada';
 });
-const explanation = computed(() => props.question.explanation);
 
 </script>
 
 <style scoped>
 .flashcard {
   background-color: transparent;
-  width: 100%; /* Ajusta según sea necesario */
+  width: 100%;
   max-width: 500px;
-  min-height: 250px; /* Altura mínima */
-  aspect-ratio: 16 / 10; /* O una proporción que te guste */
+  min-height: 250px;
+  aspect-ratio: 16 / 10;
   perspective: 1000px;
   cursor: pointer;
   border-radius: var(--border-radius);
@@ -89,9 +76,10 @@ const explanation = computed(() => props.question.explanation);
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px; /* Added padding */
   border-radius: var(--border-radius);
-  box-sizing: border-box; /* Asegura que el padding no aumente el tamaño */
-  overflow-y: auto; /* Para contenido largo */
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .flashcard-front {
@@ -101,10 +89,10 @@ const explanation = computed(() => props.question.explanation);
 }
 
 .flashcard-back {
-  background-color: var(--primary-light); /* Un color diferente para el reverso */
+  background-color: var(--primary-light);
   color: var(--text-primary);
   transform: rotateY(180deg);
-  text-align: left; /* Alinear texto a la izquierda en el reverso */
+  text-align: left;
   align-items: flex-start;
 }
 
